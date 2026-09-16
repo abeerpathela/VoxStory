@@ -1,0 +1,108 @@
+{
+  "voiceDiarizationPatterns": [
+    {
+      "id": "pat-1",
+      "name": "Pitch-Variance Speaker Segregator",
+      "features": ["f0_fundamental_frequency", "zero_crossing_rate", "spectral_centroid"],
+      "confidenceThreshold": 0.88,
+      "weights": { "pitch": 0.45, "energy": 0.35, "pause": 0.20 }
+    },
+    {
+      "id": "pat-2",
+      "name": "Conversational Turn-Taking Detector",
+      "features": ["silence_gap_ms", "energy_delta", "overlap_harmonic_ratio"],
+      "confidenceThreshold": 0.91,
+      "weights": { "silence": 0.50, "spectral_flux": 0.30, "volume_jump": 0.20 }
+    }
+  ],
+  "thoughtTaxonomy": [
+    {
+      "category": "Visual Atmosphere",
+      "keywords": ["neon", "cyberpunk", "hazy", "golden hour", "fog", "cinematic", "dramatic lighting", "volumetric", "rain-slicked", "bioluminescent"],
+      "targetStyle": "atmospheric"
+    },
+    {
+      "category": "Architectural & Environmental",
+      "keywords": ["megastructure", "brutalist", "minimalist", "temple", "floating island", "sanctuary", "skyscrapers", "cathedral", "ruins"],
+      "targetStyle": "environment"
+    },
+    {
+      "category": "Character & Expression",
+      "keywords": ["cybernetic", "ethereal", "fierce", "cloaked", "wanderer", "glowing eyes", "ornate armor", "solitary", "visionary"],
+      "targetStyle": "portrait"
+    },
+    {
+      "category": "Motion & Cinematic Pacing",
+      "keywords": ["slow zoom", "drone sweep", "orbital pan", "hyperlapse", "dynamic action", "seamless transition", "shallow depth of field"],
+      "targetStyle": "cinematic_video"
+    }
+  ],
+  "trainingCorpus": [
+    {
+      "id": "train-001",
+      "dialogueType": "Dual-Speaker Creative Brainstorm",
+      "speakers": ["Client - Maya", "Art Director - Ken"],
+      "inputTranscript": "Maya: I want a futuristic sanctuary in the clouds where digital monks meditate under holographic cherry blossoms. Ken: Yes, and we should use dusk lighting with deep indigo skies and warm golden neon trails.",
+      "extractedThoughts": {
+        "coreTheme": "Spiritual Cyberpunk Sanctuary",
+        "mood": "Contemplative, Serene yet High-Tech",
+        "keyElements": ["Floating pagoda", "Holographic cherry petals", "Indigo twilight", "Golden neon accents", "Volumetric fog"]
+      },
+      "storyOutput": "High above the smog-laden mega-cities of 2142, the Seraphim Cloister drifts in perpetual twilight. Here, cybernetic ascetics gather on polished obsidian balconies, meditating under the tranquil glow of synthetic sakura trees that shower luminescent data-petals into the abyss below. The sky is a gradient of deep indigo and ember gold.",
+      "prompts": {
+        "midjourney": "A futuristic Zen monastery floating high above clouds at twilight, cybernetic monks meditating, holographic glowing cherry blossom trees shedding light particles, polished obsidian floors with neon reflections, deep indigo sky with warm amber horizon, volumetric dusk fog, Hasselblad 80mm lens, cinematic photorealistic lighting --ar 16:9 --style raw --v 6.0",
+        "flux": "Cinematic wide shot of a floating cyberpunk Buddhist temple amidst clouds during golden hour. Cyber monks meditating silently. Giant translucent glowing sakura trees casting soft pink and amber light onto rain-slicked reflective black stone. Ultra-high detail, pristine textures, 8k resolution.",
+        "sora": "Slow cinematic drone dolly-in through floating cherry blossom data-petals, revealing a solitary cybernetic monk seated in meditation on a suspended pagoda terrace above a sea of illuminated clouds at dusk. Camera smoothly descends with subtle tilt-up."
+      }
+    },
+    {
+      "id": "train-002",
+      "dialogueType": "Multi-Client Sci-Fi Worldbuilding",
+      "speakers": ["Client 1 - Leo", "Client 2 - Sarah", "Sound Lead - Tariq"],
+      "inputTranscript": "Leo: The deep ocean research station needs to feel ancient and alien, like it was constructed inside the fossilized ribcage of a leviathan. Sarah: And we need emerald bioluminescence pulsing through the hydrothermal vents. Tariq: The ambient mood should be heavy, echoing with distant whale songs and reactor hums.",
+      "extractedThoughts": {
+        "coreTheme": "Abyssal Biomechanical Research Outpost",
+        "mood": "Mysterious, Claustrophobic, Wonder-filled",
+        "keyElements": ["Giant leviathan fossil", "Submerged laboratory pods", "Emerald hydrothermal vents", "Dark abyss", "Submersible spotlights"]
+      },
+      "storyOutput": "Three thousand meters beneath the surface of the Marianas Trench, Station Leviathan rests nestled within the colossal calcified ribs of a creature from the planet's primeval dawn. Reinforced titanium research spheres cling to the ancient bone, bathed in the eerie emerald pulse of geothermal vents. Submersible searchlights pierce the pitch-black abyss, casting long skeletal shadows.",
+      "prompts": {
+        "midjourney": "Deep sea research laboratory built inside the massive fossilized ribcage of an ancient colossal leviathan, underwater 4000 meters abyss, glowing emerald hydrothermal vents, high-tech yellow submersible exploring with volumetric beams of light, ultra-detailed textures, marine snow, National Geographic documentary style, octane render --ar 21:9 --v 6.0",
+        "flux": "Breathtaking macro and wide deep ocean abyss scene, underwater high-tech science pod bolted onto gargantuan ancient sea creature bones. Deep teal and emerald lighting, glowing underwater flora, extreme realism, cinematic depth of field.",
+        "sora": "Slow sweeping underwater pan through giant leviathan skeletal arches, revealing high-tech deep-sea submersible headlights illuminating an active research dome with scientists visible inside."
+      }
+    },
+    {
+      "id": "train-003",
+      "dialogueType": "Solo Visionary Monologue",
+      "speakers": ["Architect - Elena"],
+      "inputTranscript": "Elena: I'm picturing an eco-minimalist desert villa made of curved rammed earth and rammed sandstone, with a central infinity pool reflecting the starry desert night. Glass walls that slide into the stone completely.",
+      "extractedThoughts": {
+        "coreTheme": "Organic Desert Sanctuary",
+        "mood": "Peaceful, Luxurious, Architectural Elegance",
+        "keyElements": ["Curved rammed earth", "Seamless glass facade", "Desert dunes", "Reflective infinity pool", "Milky Way night sky"]
+      },
+      "storyOutput": "Carved seamlessly into the undulating dunes of the Al-Ula desert, the Dune Horizon Villa disappears into the landscape. Its sweeping rammed earth walls echo the wind patterns of centuries, while an obsidian water mirror reflects the infinite starry dome of the desert cosmos. Inside, warm diffused recessed lighting invites quiet contemplation.",
+      "prompts": {
+        "midjourney": "Modern organic architecture desert villa made of undulating curved rammed earth and sandstone, floor-to-ceiling retractable glass, minimalist black water mirror infinity pool reflecting starry Milky Way galaxy, warm ambient interior lighting, Architectural Digest photoshoot, Roger Hawkins style --ar 16:9 --v 6.0",
+        "flux": "Award-winning architectural photography of a luxury desert home built from organic rammed earth curves in the Sahara desert at twilight. Clear night sky filled with stars, warm glowing lantern illumination, glass reflections, masterwork quality.",
+        "sora": "Smooth lateral camera tracking shot across the surface of an obsidian desert reflection pool, rising to reveal the warm glowing curved sandstone villa under a shimmering starry desert night sky."
+      }
+    }
+  ],
+  "modelWeights": {
+    "version": "1.4.2-local",
+    "diarizationAccuracy": 0.942,
+    "thoughtExtractionConfidence": 0.925,
+    "narrativeCoherenceScore": 0.958,
+    "promptPrecisionIndex": 0.967,
+    "styleBiases": {
+      "cinematic": 0.92,
+      "photorealistic": 0.89,
+      "cyberpunk": 0.87,
+      "anime_ghibli": 0.85,
+      "architectural": 0.90,
+      "dark_fantasy": 0.88
+    }
+  }
+}

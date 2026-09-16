@@ -1,0 +1,121 @@
+[
+  {
+    "id": "sample-metropolis",
+    "title": "Neon Skyport - Client & Creative Director Brainstorm",
+    "category": "Sci-Fi & Cyberpunk",
+    "speakersCount": 2,
+    "duration": 48,
+    "speakers": [
+      { "id": "spk_1", "name": "Maya (Client Lead)", "role": "Creative Visionary", "avatarColor": "#8b5cf6" },
+      { "id": "spk_2", "name": "Dax (Art Director)", "role": "Lighting & Aesthetic Lead", "avatarColor": "#06b6d4" }
+    ],
+    "clientNotes": "We want an iconic cover scene for our neo-noir graphic novel: a flying vehicle terminal suspended between kilometer-high skyscrapers in rainy Neo-Kyoto.",
+    "rawDialogue": [
+      {
+        "speakerId": "spk_1",
+        "speakerName": "Maya (Client Lead)",
+        "startTime": "00:00",
+        "endTime": "00:14",
+        "text": "Imagine standing at the edge of a suspended skyport on the 120th floor. It's pouring rain, and below us, neon holographic billboards in magenta and cobalt are cutting through the heavy mist.",
+        "pitchScore": 210,
+        "energyLevel": "High / Passionate",
+        "sentiment": "Excited & Visionary",
+        "visualKeywords": ["Skyport terminal", "120th floor", "Rain-slicked", "Magenta & cobalt neon", "Heavy mist"]
+      },
+      {
+        "speakerId": "spk_2",
+        "speakerName": "Dax (Art Director)",
+        "startTime": "00:14",
+        "endTime": "00:29",
+        "text": "I love that. Let's add a sleek vintage-futuristic hover-coupe parked at the landing pad with its gullwing doors open, glowing exhaust cooling down in the wet night air.",
+        "pitchScore": 135,
+        "energyLevel": "Focused / Technical",
+        "sentiment": "Constructive & Detailed",
+        "visualKeywords": ["Vintage-futuristic hover-coupe", "Gullwing doors", "Cooling exhaust steam", "Reflective wet pavement"]
+      },
+      {
+        "speakerId": "spk_1",
+        "speakerName": "Maya (Client Lead)",
+        "startTime": "00:29",
+        "endTime": "00:48",
+        "text": "Yes! And a solitary courier in an illuminated high-collar trench coat looking out over the endless city canyons. The mood should feel melancholic yet strikingly epic and cinematic.",
+        "pitchScore": 225,
+        "energyLevel": "Deep / Evocative",
+        "sentiment": "Atmospheric & Dramatic",
+        "visualKeywords": ["Solitary courier", "Illuminated high-collar coat", "Endless skyscraper canyons", "Cinematic melancholy"]
+      }
+    ]
+  },
+  {
+    "id": "sample-fantasy-forge",
+    "title": "Astral Celestial Forge - 3-Person Worldbuilding Session",
+    "category": "Epic Fantasy & Lore",
+    "speakersCount": 3,
+    "duration": 56,
+    "speakers": [
+      { "id": "spk_1", "name": "Elena (Narrative Lead)", "role": "Worldbuilder", "avatarColor": "#ec4899" },
+      { "id": "spk_2", "name": "Gideon (Character Designer)", "role": "Creature & Armor Artist", "avatarColor": "#eab308" },
+      { "id": "spk_3", "name": "Kaelen (VFX Producer)", "role": "Atmosphere Specialist", "avatarColor": "#10b981" }
+    ],
+    "clientNotes": "Developing the visual keyframe for the heart of the Star-Smith Guild: an ancient forge heated by a contained dying dwarf star.",
+    "rawDialogue": [
+      {
+        "speakerId": "spk_1",
+        "speakerName": "Elena (Narrative Lead)",
+        "startTime": "00:00",
+        "endTime": "00:18",
+        "text": "The entire chamber is made of dark star-metal obsidian. Floating in the center inside massive magnetic containment rings is a miniature white dwarf star roaring with solar flares.",
+        "pitchScore": 230,
+        "energyLevel": "High Wonder",
+        "sentiment": "Awe-inspiring",
+        "visualKeywords": ["Obsidian star-metal chamber", "Magnetic containment rings", "Miniature white dwarf star", "Solar flares"]
+      },
+      {
+        "speakerId": "spk_2",
+        "speakerName": "Gideon (Character Designer)",
+        "startTime": "00:18",
+        "endTime": "00:36",
+        "text": "A towering celestial blacksmith with crystalline skin is hammering a cosmic blade on an anvil made of comet stone. Every strike sends cascading embers shaped like miniature constellations.",
+        "pitchScore": 140,
+        "energyLevel": "Intense / Mythic",
+        "sentiment": "Powerful & Grand",
+        "visualKeywords": ["Celestial blacksmith", "Crystalline skin", "Cosmic blade", "Comet stone anvil", "Constellation embers"]
+      },
+      {
+        "speakerId": "spk_3",
+        "speakerName": "Kaelen (VFX Producer)",
+        "startTime": "00:36",
+        "endTime": "00:56",
+        "text": "We need extreme contrast: blinding solar white and gold in the center, transitioning to deep cosmic violet shadows and floating dust motes catching the stellar glow.",
+        "pitchScore": 175,
+        "energyLevel": "Atmospheric",
+        "sentiment": "Artistic Precision",
+        "visualKeywords": ["Blinding solar white & gold", "Cosmic violet shadows", "Floating illuminated dust motes", "Extreme contrast"]
+      }
+    ]
+  },
+  {
+    "id": "sample-eco-architecture",
+    "title": "Solaris Biophilic Tower - Client Monologue & Vision",
+    "category": "Modern Architecture & Solarpunk",
+    "speakersCount": 1,
+    "duration": 34,
+    "speakers": [
+      { "id": "spk_1", "name": "Amira (Principal Architect)", "role": "Client / Founder", "avatarColor": "#14b8a6" }
+    ],
+    "clientNotes": "A next-generation solarpunk vertical forest tower designed for Mediterranean coastal climate.",
+    "rawDialogue": [
+      {
+        "speakerId": "spk_1",
+        "speakerName": "Amira (Principal Architect)",
+        "startTime": "00:00",
+        "endTime": "00:34",
+        "text": "I want a towering spiral skyscraper woven with cascading vertical gardens, olive trees, and hanging jasmine. The architecture uses curved white limestone terraces and photovoltaic glass sails that catch the Mediterranean golden hour sun over crystal blue waters.",
+        "pitchScore": 195,
+        "energyLevel": "Calm & Visionary",
+        "sentiment": "Harmonious & Elegant",
+        "visualKeywords": ["Spiral vertical forest tower", "Olive trees & hanging jasmine", "Curved white limestone", "Photovoltaic glass sails", "Mediterranean sunset"]
+      }
+    ]
+  }
+]

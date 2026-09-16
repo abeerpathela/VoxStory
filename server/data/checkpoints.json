@@ -1,0 +1,36 @@
+[
+  {
+    "id": "ckpt_trained_1789385259211",
+    "name": "Custom Fine-Tune (ALL - 15 Epochs)",
+    "createdAt": "2026-09-14T11:27:39.211Z",
+    "epochs": 15,
+    "learningRate": 0.0005,
+    "batchSize": 4,
+    "targetTask": "all",
+    "finalLoss": 0.1067,
+    "validationAccuracy": 0.9645,
+    "active": true
+  },
+  {
+    "id": "ckpt_trained_1787578111789",
+    "name": "Custom Fine-Tune (ALL - 10 Epochs)",
+    "createdAt": "2026-08-24T13:28:31.789Z",
+    "epochs": 10,
+    "learningRate": 0.0005,
+    "batchSize": 4,
+    "targetTask": "all",
+    "finalLoss": 0.1029,
+    "validationAccuracy": 0.9618,
+    "active": true
+  },
+  {
+    "id": "ckpt_base_1.0",
+    "name": "VoxStory Base-1.0 (Acoustic + NLP)",
+    "createdAt": "2026-08-19T13:17:01.961Z",
+    "epochs": 25,
+    "learningRate": 0.0003,
+    "finalLoss": 0.0421,
+    "validationAccuracy": 0.948,
+    "active": true
+  }
+]
