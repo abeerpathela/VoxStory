@@ -1,90 +1,101 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { AuthProvider } from './context/AuthContext';
-import { StudioProvider, useStudio } from './context/StudioContext';
+import { StudioProvider } from './context/StudioContext';
 import { Navbar } from './components/Navbar';
 import { AuthModal } from './components/AuthModal';
-import { ClientWritingCanvas } from './components/ClientWritingCanvas';
 import { VoiceStudio } from './components/VoiceStudio';
-import { VoiceBreakdownView } from './components/VoiceBreakdownView';
-import { StorySynthesizerView } from './components/StorySynthesizerView';
-import { PromptGeneratorView } from './components/PromptGeneratorView';
-import { ModelTrainingStudio } from './components/ModelTrainingStudio';
-import { Sparkles, Layers, BookOpen, Zap, Cpu, ShieldCheck } from 'lucide-react';
+import { SimpleOutputView } from './components/SimpleOutputView';
+import { LoadingScreen } from './components/LoadingScreen';
+import { ShieldCheck } from 'lucide-react';
+
+const FooterMicLogo = () => {
+  return (
+    <svg width="14" height="14" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="footGrad" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#22d3ee" />
+          <stop offset="50%" stopColor="#a855f7" />
+          <stop offset="100%" stopColor="#ec4899" />
+        </linearGradient>
+      </defs>
+      <path d="M52 22 C43 22 36 29 36 38 L36 60 C36 69 43 76 52 76 C61 76 68 69 68 60 L68 38 C68 29 61 22 52 22 Z" fill="url(#footGrad)" fillOpacity="0.2" stroke="url(#footGrad)" strokeWidth="5" />
+      <line x1="52" y1="76" x2="52" y2="96" stroke="url(#footGrad)" strokeWidth="5" strokeLinecap="round" />
+      <path d="M38 96 L38 104 C38 112 45 118 52 118 C59 118 66 112 66 104 L66 96" stroke="url(#footGrad)" strokeWidth="5" fill="none" strokeLinecap="round" />
+      <line x1="32" y1="118" x2="72" y2="118" stroke="url(#footGrad)" strokeWidth="5" strokeLinecap="round" />
+    </svg>
+  );
+};
 
 const StudioMain = () => {
-  const { activeTab, setActiveTab } = useStudio();
+  const [appReady, setAppReady] = useState(false);
+
+  useEffect(() => {
+    if (appReady) {
+      document.body.style.overflow = '';
+    } else {
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [appReady]);
 
   return (
-    <div className="min-h-screen flex flex-col justify-between">
-      <div>
-        <Navbar />
-
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-          {/* Studio Canvas Tab: Dual Pane Writing & Voice Studio */}
-          {activeTab === 'studio' && (
-            <div className="space-y-8">
-              {/* Hero Banner */}
-              <div className="relative rounded-3xl p-8 overflow-hidden bg-gradient-to-r from-purple-950/40 via-indigo-950/30 to-slate-950 border border-purple-500/20 shadow-2xl">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
-                <div className="relative z-10 max-w-3xl space-y-3">
-                  <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-mono">
-                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                    <span>ACOUSTIC DIARIZATION & STORY PROMPT STUDIO</span>
-                  </div>
-                  <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
-                    Convert Client Voice & Thoughts into <span className="text-gradient-purple-cyan">Thoughtful Stories & Precision Prompts</span>
-                  </h1>
-                  <p className="text-sm text-slate-300 leading-relaxed">
-                    Listen to voice messages of one or multiple clients, analyze creative thoughts, break down audio into speaker pieces with local acoustic diarization, weave rich narratives, and compile hyper-accurate prompts.
-                  </p>
-                </div>
-              </div>
-
-              {/* Dual-Pane Grid: Client Writing Canvas + Voice Studio */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-                <ClientWritingCanvas />
-                <VoiceStudio />
-              </div>
-            </div>
-          )}
-
-          {/* Voice Breakdown Tab */}
-          {activeTab === 'breakdown' && <VoiceBreakdownView />}
-
-          {/* Story Synthesizer Tab */}
-          {activeTab === 'story' && <StorySynthesizerView />}
-
-          {/* Precision Prompt Matrix Tab */}
-          {activeTab === 'prompts' && <PromptGeneratorView />}
-
-          {/* Model Training & Fine-Tuning Studio Tab */}
-          {activeTab === 'training' && <ModelTrainingStudio />}
-        </main>
-      </div>
-
-      {/* Footer */}
-      <footer className="border-t border-slate-800/80 bg-slate-950 py-6 mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <div className="flex items-center space-x-2">
-            <span className="font-semibold text-slate-300">VoxStory AI Studio</span>
-            <span>•</span>
-            <span>Local Neural Acoustic Diarization & Story Prompt Generation Engine</span>
-          </div>
-
-          <div className="flex items-center space-x-4 font-mono text-[11px]">
-            <span className="text-emerald-400 flex items-center space-x-1">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Zero External API Dependency</span>
-            </span>
-            <span className="text-slate-600">|</span>
-            <span className="text-purple-400">Model v1.4.2-local</span>
-          </div>
+    <>
+      {!appReady && <LoadingScreen onFinish={() => setAppReady(true)} minDuration={2800} />}
+      <div
+        className="min-h-screen flex flex-col transition-opacity duration-700"
+        style={{ opacity: appReady ? 1 : 0 }}
+      >
+        <div className="flex-1">
+          <Navbar />
+          <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+            <VoiceStudio />
+            <section>
+              <SimpleOutputView />
+            </section>
+          </main>
         </div>
-      </footer>
 
-      {/* Global Auth Modal */}
-      <AuthModal />
-    </div>
+        <footer className="border-t border-ink-700/60 bg-ink-900/50 backdrop-blur py-6 mt-8">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-[12px] text-ink-300">
+            <div className="flex items-center gap-2">
+              <FooterMicLogo />
+              <span className="font-semibold">
+                <span
+                  style={{
+                    background: 'linear-gradient(90deg, #22d3ee, #6366f1)',
+                    WebkitBackgroundClip: 'text',
+                    backgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent'
+                  }}
+                >Vox</span>
+                <span
+                  style={{
+                    background: 'linear-gradient(90deg, #a855f7, #ec4899)',
+                    WebkitBackgroundClip: 'text',
+                    backgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent'
+                  }}
+                >Story</span>
+              </span>
+              <span className="text-ink-500">—</span>
+              <span>Record, upload, or type. Get AI prompts.</span>
+            </div>
+            <div className="flex items-center gap-3 text-ink-400 font-mono">
+              <span className="flex items-center gap-1.5 text-emerald-400">
+                <ShieldCheck className="w-3.5 h-3.5" />
+                100% local · no cloud
+              </span>
+              <span className="text-ink-600">|</span>
+              <span>v1.4.2</span>
+            </div>
+          </div>
+        </footer>
+
+        <AuthModal />
+      </div>
+    </>
   );
 };
 

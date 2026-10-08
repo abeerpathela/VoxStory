@@ -4,8 +4,6 @@ import { api } from '../utils/api';
 const StudioContext = createContext(null);
 
 export const StudioProvider = ({ children }) => {
-  const [activeTab, setActiveTab] = useState('studio'); // 'studio', 'breakdown', 'story', 'prompts', 'training'
-  
   // Client Writing Workspace State
   const [clientNotes, setClientNotes] = useState(
     "A floating neo-tokyo skyport suspended between cloud-piercing skyscrapers in heavy rain. Solitary courier in high-collar trench coat gazing into endless canyon of magenta and cobalt neon billboards."
@@ -13,7 +11,7 @@ export const StudioProvider = ({ children }) => {
   const [selectedStyle, setSelectedStyle] = useState('cyberpunk');
   const [aspectRatio, setAspectRatio] = useState('16:9');
   const [selectedCamera, setSelectedCamera] = useState('Hasselblad H6D-100c, 80mm lens, f/2.8');
-  
+
   // Audio & Voice State
   const [samples, setSamples] = useState([]);
   const [activeSampleId, setActiveSampleId] = useState('sample-metropolis');
@@ -22,7 +20,7 @@ export const StudioProvider = ({ children }) => {
   const [audioWaveform, setAudioWaveform] = useState([]);
   const [audioDuration, setAudioDuration] = useState(48);
   const [synthesizedThoughts, setSynthesizedThoughts] = useState(null);
-  
+
   // Story & Narrative State
   const [isSynthesizingStory, setIsSynthesizingStory] = useState(false);
   const [storyData, setStoryData] = useState(null);
@@ -31,50 +29,105 @@ export const StudioProvider = ({ children }) => {
   const [isGeneratingPrompts, setIsGeneratingPrompts] = useState(false);
   const [promptData, setPromptData] = useState(null);
 
-  // Model Training Studio State
+  // Model Training Studio State (kept for data, but removed from UI tabs)
   const [trainingDatasets, setTrainingDatasets] = useState(null);
   const [checkpoints, setCheckpoints] = useState([]);
   const [isTraining, setIsTraining] = useState(false);
   const [trainingTelemetry, setTrainingTelemetry] = useState(null);
 
-  // Initialize with default sample scenario
+  // Convenience: is anything loading?
+  const isAnythingLoading = isProcessingVoice || isSynthesizingStory || isGeneratingPrompts;
+
+  // Full pipeline: analyze voice → synthesize story → generate prompts, all in one go
+  const runFullPipeline = async ({
+    segments,
+    waveform,
+    duration,
+    thoughts,
+    notes,
+    style
+  }) => {
+    const currentNotes = notes ?? clientNotes;
+    const currentStyle = style ?? selectedStyle;
+    const currentSegments = segments ?? voiceSegments;
+    const currentThoughts = thoughts ?? synthesizedThoughts;
+
+    // If we got raw analysis data, set it first
+    if (segments) setVoiceSegments(segments);
+    if (waveform) setAudioWaveform(waveform);
+    if (duration != null) setAudioDuration(duration);
+    if (thoughts) setSynthesizedThoughts(thoughts);
+    if (notes != null) setClientNotes(currentNotes);
+
+    // Step 2: synthesize story
+    setIsSynthesizingStory(true);
+    let storyResult = null;
+    try {
+      const storyRes = await api.synthesizeStory({
+        segments: currentSegments,
+        clientNotes: currentNotes,
+        style: currentStyle,
+        thoughts: currentThoughts
+      });
+      if (storyRes?.success) {
+        setStoryData(storyRes);
+        storyResult = storyRes;
+      }
+    } catch (e) {
+      console.error('Story error:', e);
+    } finally {
+      setIsSynthesizingStory(false);
+    }
+
+    // Step 3: generate prompts
+    setIsGeneratingPrompts(true);
+    try {
+      const promptRes = await api.generatePrompts({
+        story: storyResult?.narrativeArc || '',
+        thoughts: currentThoughts,
+        clientNotes: currentNotes,
+        style: currentStyle,
+        params: { aspectRatio, camera: selectedCamera }
+      });
+      if (promptRes?.success) setPromptData(promptRes);
+    } catch (e) {
+      console.error('Prompt error:', e);
+    } finally {
+      setIsGeneratingPrompts(false);
+    }
+  };
+
+  // Initialize with default sample scenario -> auto-run pipeline
   useEffect(() => {
     const initStudio = async () => {
       try {
         const samplesRes = await api.getSamples();
-        if (samplesRes?.samples) {
-          setSamples(samplesRes.samples);
-        }
+        if (samplesRes?.samples) setSamples(samplesRes.samples);
 
-        // Auto load first sample
+        setIsProcessingVoice(true);
         const loaded = await api.loadSample('sample-metropolis');
+        setIsProcessingVoice(false);
+
         if (loaded?.success) {
-          setVoiceSegments(loaded.segments || []);
-          setAudioWaveform(loaded.waveform || []);
-          setAudioDuration(loaded.duration || 48);
-          setSynthesizedThoughts(loaded.synthesizedThoughts || null);
-          setClientNotes(loaded.clientNotes || clientNotes);
+          const detectedStyle = loaded.category?.toLowerCase().includes('cyberpunk')
+            ? 'cyberpunk'
+            : loaded.category?.toLowerCase().includes('fantasy')
+            ? 'fantasy'
+            : 'architectural';
+          setSelectedStyle(detectedStyle);
 
-          // Pre-synthesize story and prompts for immediate rich display
-          const storyRes = await api.synthesizeStory({
-            segments: loaded.segments,
-            clientNotes: loaded.clientNotes,
-            style: 'cyberpunk',
-            thoughts: loaded.synthesizedThoughts
+          // Run the rest of the pipeline with loaded data
+          await runFullPipeline({
+            segments: loaded.segments || [],
+            waveform: loaded.waveform || [],
+            duration: loaded.duration || 48,
+            thoughts: loaded.synthesizedThoughts || null,
+            notes: loaded.clientNotes || clientNotes,
+            style: detectedStyle
           });
-          if (storyRes?.success) setStoryData(storyRes);
-
-          const promptRes = await api.generatePrompts({
-            story: storyRes?.narrativeArc,
-            thoughts: loaded.synthesizedThoughts,
-            clientNotes: loaded.clientNotes,
-            style: 'cyberpunk',
-            params: { aspectRatio: '16:9' }
-          });
-          if (promptRes?.success) setPromptData(promptRes);
         }
 
-        // Load training datasets & checkpoints
+        // Load training datasets & checkpoints in background (kept for data)
         const [datasetsRes, ckptRes] = await Promise.all([
           api.getDatasets(),
           api.getCheckpoints()
@@ -83,25 +136,23 @@ export const StudioProvider = ({ children }) => {
         if (ckptRes?.success) setCheckpoints(ckptRes.checkpoints);
       } catch (err) {
         console.error('Failed to initialize studio:', err);
+        setIsProcessingVoice(false);
+        setIsSynthesizingStory(false);
+        setIsGeneratingPrompts(false);
       }
     };
 
     initStudio();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Load a Pre-Bundled Multi-Speaker Audio Scenario
+  // Load a Pre-Bundled Multi-Speaker Audio Scenario -> auto-run full pipeline
   const handleLoadSample = async (sampleId) => {
     setIsProcessingVoice(true);
     setActiveSampleId(sampleId);
     try {
       const res = await api.loadSample(sampleId);
       if (res?.success) {
-        setVoiceSegments(res.segments || []);
-        setAudioWaveform(res.waveform || []);
-        setAudioDuration(res.duration || 30);
-        setSynthesizedThoughts(res.synthesizedThoughts || null);
-        if (res.clientNotes) setClientNotes(res.clientNotes);
-
         const newStyle = res.category?.toLowerCase().includes('cyberpunk')
           ? 'cyberpunk'
           : res.category?.toLowerCase().includes('fantasy')
@@ -109,23 +160,14 @@ export const StudioProvider = ({ children }) => {
           : 'architectural';
         setSelectedStyle(newStyle);
 
-        // Auto-refresh story and prompts
-        const storyRes = await api.synthesizeStory({
-          segments: res.segments,
-          clientNotes: res.clientNotes || clientNotes,
-          style: newStyle,
-          thoughts: res.synthesizedThoughts
+        await runFullPipeline({
+          segments: res.segments || [],
+          waveform: res.waveform || [],
+          duration: res.duration || 30,
+          thoughts: res.synthesizedThoughts || null,
+          notes: res.clientNotes,
+          style: newStyle
         });
-        if (storyRes?.success) setStoryData(storyRes);
-
-        const promptRes = await api.generatePrompts({
-          story: storyRes?.narrativeArc,
-          thoughts: res.synthesizedThoughts,
-          clientNotes: res.clientNotes || clientNotes,
-          style: newStyle,
-          params: { aspectRatio, camera: selectedCamera }
-        });
-        if (promptRes?.success) setPromptData(promptRes);
       }
     } catch (err) {
       console.error('Error loading sample:', err);
@@ -134,7 +176,7 @@ export const StudioProvider = ({ children }) => {
     }
   };
 
-  // Analyze Custom Live Microphone Recording or Uploaded Audio Text
+  // Analyze Custom Live Microphone Recording or Uploaded Audio Text -> auto-run full pipeline
   const handleAnalyzeCustomVoice = async ({ transcriptText, duration = 30, speakersHint = [] }) => {
     setIsProcessingVoice(true);
     try {
@@ -146,28 +188,12 @@ export const StudioProvider = ({ children }) => {
         style: selectedStyle
       });
       if (res?.success) {
-        setVoiceSegments(res.segments || []);
-        setAudioWaveform(res.waveform || []);
-        setAudioDuration(res.duration || duration);
-        setSynthesizedThoughts(res.synthesizedThoughts || null);
-
-        // Auto-synthesize story & prompts
-        const storyRes = await api.synthesizeStory({
-          segments: res.segments,
-          clientNotes,
-          style: selectedStyle,
-          thoughts: res.synthesizedThoughts
+        await runFullPipeline({
+          segments: res.segments || [],
+          waveform: res.waveform || [],
+          duration: res.duration || duration,
+          thoughts: res.synthesizedThoughts || null
         });
-        if (storyRes?.success) setStoryData(storyRes);
-
-        const promptRes = await api.generatePrompts({
-          story: storyRes?.narrativeArc,
-          thoughts: res.synthesizedThoughts,
-          clientNotes,
-          style: selectedStyle,
-          params: { aspectRatio, camera: selectedCamera }
-        });
-        if (promptRes?.success) setPromptData(promptRes);
       }
     } catch (err) {
       console.error('Error analyzing voice:', err);
@@ -176,44 +202,18 @@ export const StudioProvider = ({ children }) => {
     }
   };
 
-  // Synthesize Story
-  const handleSynthesizeStory = async (customStyle = selectedStyle) => {
-    setIsSynthesizingStory(true);
-    try {
-      const res = await api.synthesizeStory({
-        segments: voiceSegments,
-        clientNotes,
-        style: customStyle,
-        thoughts: synthesizedThoughts
-      });
-      if (res?.success) {
-        setStoryData(res);
-      }
-    } catch (err) {
-      console.error('Error synthesizing story:', err);
-    } finally {
-      setIsSynthesizingStory(false);
-    }
-  };
-
-  // Generate Precision Prompts
-  const handleGeneratePrompts = async (customParams = {}) => {
+  // Re-generate prompts (e.g. when style/aspect/camera changes)
+  const regeneratePrompts = async () => {
     setIsGeneratingPrompts(true);
     try {
-      const res = await api.generatePrompts({
+      const promptRes = await api.generatePrompts({
         story: storyData?.narrativeArc,
         thoughts: synthesizedThoughts,
         clientNotes,
         style: selectedStyle,
-        params: {
-          aspectRatio,
-          camera: selectedCamera,
-          ...customParams
-        }
+        params: { aspectRatio, camera: selectedCamera }
       });
-      if (res?.success) {
-        setPromptData(res);
-      }
+      if (promptRes?.success) setPromptData(promptRes);
     } catch (err) {
       console.error('Error generating prompts:', err);
     } finally {
@@ -241,8 +241,6 @@ export const StudioProvider = ({ children }) => {
   return (
     <StudioContext.Provider
       value={{
-        activeTab,
-        setActiveTab,
         clientNotes,
         setClientNotes,
         selectedStyle,
@@ -261,16 +259,18 @@ export const StudioProvider = ({ children }) => {
         synthesizedThoughts,
         isSynthesizingStory,
         storyData,
+        setStoryData,
         isGeneratingPrompts,
         promptData,
         trainingDatasets,
         checkpoints,
         isTraining,
         trainingTelemetry,
+        isAnythingLoading,
         loadSample: handleLoadSample,
         analyzeCustomVoice: handleAnalyzeCustomVoice,
-        synthesizeStory: handleSynthesizeStory,
-        generatePrompts: handleGeneratePrompts,
+        regeneratePrompts,
+        runFullPipeline,
         runTraining: handleRunTraining
       }}
     >
